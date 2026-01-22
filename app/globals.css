@@ -59,6 +59,39 @@ body {
   }
 }
 
+@keyframes shine {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+
+  100% {
+    transform: translateX(150%) skewX(-25deg);
+  }
+}
+
+.animate-shine {
+  animation: shine 2s ease-in-out infinite;
+}
+
+@keyframes liquid {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-liquid {
+  background-size: 300% 300%;
+  animation: liquid 8s ease infinite;
+}
+
 .animate-aurora {
   animation: aurora 60s linear infinite;
 }

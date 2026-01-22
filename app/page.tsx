@@ -3,22 +3,35 @@
 import { useGradeCalculator } from "./hooks/useGradeCalculator";
 import { BranchSelector } from "./components/BranchSelector";
 import { SubjectRow } from "./components/SubjectRow";
-import { AuroraBackground } from "./components/AuroraBackground";
+import { QuantumGridBackground } from "./components/QuantumGridBackground";
+import { ActivityFeed } from "./components/ActivityFeed";
+import { GithubPFP } from "./components/GithubPFP";
+import { ProgressRing } from "./components/ProgressRing";
+import { ModuleImpact } from "./components/ModuleImpact";
+import { MobileActionBar } from "./components/MobileActionBar";
+import { WhatIfSimulator } from "./components/WhatIfSimulator";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef } from "react";
+import confetti from "canvas-confetti";
+import html2canvas from "html2canvas";
 
 export default function Home() {
   const {
     branches,
     selectedBranch,
     setSelectedBranchId,
-    selectedSemester,
-    setSelectedSemester,
     currentSubjects,
     grades,
     updateGrade,
     getModuleAverage,
     semesterAverage,
+    clearData,
+    isSimulationMode,
+    setIsSimulationMode,
+    targetAverage,
+    setTargetAverage,
+    getSimulationGap
   } = useGradeCalculator();
 
   const getSemesterColor = (avg: number) => {
@@ -29,14 +42,67 @@ export default function Home() {
     return "text-red-500 shadow-red-500";
   };
 
+  // Confetti celebration when passing
+  const prevAvgRef = useRef(semesterAverage);
+  useEffect(() => {
+    if (prevAvgRef.current < 10 && semesterAverage >= 10) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#4ade80", "#60a5fa", "#a855f7", "#ffffff"]
+      });
+    }
+    prevAvgRef.current = semesterAverage;
+  }, [semesterAverage]);
+
+  const handleShare = async () => {
+    try {
+      const element = document.getElementById("result-card");
+      if (!element) return;
+
+      const canvas = await html2canvas(element, {
+        backgroundColor: "#121218",
+        scale: 2, // Reting quality
+      });
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+
+        // Try native sharing first (mobile)
+        if (navigator.share) {
+          try {
+            const file = new File([blob], "grades.png", { type: "image/png" });
+            await navigator.share({
+              title: "My Grades",
+              text: `I got a ${semesterAverage.toFixed(2)} average!`,
+              files: [file],
+            });
+          } catch (err) {
+            console.log("Sharing failed or cancelled", err);
+          }
+        } else {
+          // Fallback to download
+          const link = document.createElement("a");
+          link.download = "my-grades.png";
+          link.href = canvas.toDataURL();
+          link.click();
+        }
+      });
+    } catch (err) {
+      console.error("Failed to capture image", err);
+    }
+  };
+
   return (
-    <AuroraBackground>
+    <QuantumGridBackground>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative z-10 flex-1 flex flex-col p-4 sm:p-8 w-full h-[100vh] overflow-y-auto"
       >
+        <GithubPFP />
         <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
           {/* Header */}
           <div className="text-center mb-6 mt-8 relative">
@@ -47,7 +113,7 @@ export default function Home() {
               className="text-5xl md:text-7xl font-black mb-2 tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
             >
               Master 2 <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 to-white animate-text">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 to-white animate-liquid">
                 Grade Calculator
               </span>
             </motion.h1>
@@ -59,6 +125,16 @@ export default function Home() {
             >
               C'est Grave Directe | By Sofiane Belkacem Nacer
             </motion.p>
+
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              onClick={clearData}
+              className="mt-6 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300"
+            >
+              Clear Data 🗑️
+            </motion.button>
           </div>
 
           {/* Branch Selector */}
@@ -75,40 +151,13 @@ export default function Home() {
             />
           </motion.div>
 
-          {/* Semester Tabs */}
-          <div className="w-full mb-8 flex justify-center">
-            <div className="bg-black/40 backdrop-blur-md p-1.5 rounded-2xl inline-flex w-full sm:w-auto shadow-2xl border border-white/10 relative overflow-hidden">
-              {(["S1", "S2"] as const).map((sem) => (
-                <button
-                  key={sem}
-                  onClick={() => setSelectedSemester(sem)}
-                  className={cn(
-                    "relative z-10 flex-1 sm:w-32 py-2.5 rounded-xl text-sm font-bold transition-all duration-300",
-                    selectedSemester === sem
-                      ? "text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                      : "text-gray-400 hover:text-white"
-                  )}
-                >
-                  {selectedSemester === sem && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-white rounded-xl"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                  <span className="relative z-10">Semester {sem.slice(1)}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Main Content & Result Split */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full pb-20">
             {/* Subjects List */}
             <div className="lg:col-span-2 space-y-4">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={selectedBranch.id + selectedSemester}
+                  key={selectedBranch.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
@@ -123,8 +172,10 @@ export default function Home() {
                   </div>
 
                   {currentSubjects.map((sub, index) => {
-                    const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
+                    const key = `${selectedBranch.id}-S1-${sub.name}`;
                     const grade = grades[key] || { exam: 0, td: 0 };
+                    // Calculate suggested average for this row if in simulation mode
+                    const simData = getSimulationGap();
                     return (
                       <motion.div
                         key={sub.name}
@@ -138,6 +189,8 @@ export default function Home() {
                           td={grade.td}
                           moduleAvg={getModuleAverage(sub.name)}
                           onUpdate={(type, val) => updateGrade(sub.name, type, val)}
+                          isSimulationMode={isSimulationMode}
+                          suggestedAvg={simData.suggestedAvg}
                         />
                       </motion.div>
                     );
@@ -151,6 +204,7 @@ export default function Home() {
               <div className="sticky top-8 space-y-6">
                 <motion.div
                   layout
+                  id="result-card"
                   className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
                 >
                   {/* Animated glow based on score */}
@@ -169,19 +223,7 @@ export default function Home() {
                   </h3>
 
                   <div className="flex justify-center items-center py-4 relative z-10">
-                    <div
-                      className={cn(
-                        "text-7xl font-mono font-black tracking-tighter transition-all duration-500",
-                        getSemesterColor(semesterAverage)
-                      )}
-                      style={{
-                        textShadow:
-                          semesterAverage >= 10 ? `0 0 50px currentColor` : "none",
-                      }}
-                    >
-                      {/* Counter animation could go here, but simple text update is usually cleaner for frequent updates */}
-                      {semesterAverage.toFixed(2)}
-                    </div>
+                    <ProgressRing value={semesterAverage} size={140} strokeWidth={10} />
                   </div>
 
                   <div className="mt-8 flex justify-center">
@@ -200,11 +242,30 @@ export default function Home() {
                     </motion.div>
                   </div>
                 </motion.div>
+
+                {/* Module Impact Analysis */}
+                <ModuleImpact
+                  subjects={currentSubjects}
+                  grades={grades}
+                  branchId={selectedBranch.id}
+                />
+
+                {/* Social Feed Integration */}
+                <ActivityFeed
+                  currentAverage={semesterAverage}
+                  selectedBranch={selectedBranch}
+                  validAverage={semesterAverage >= 10}
+                />
               </div>
             </div>
           </div>
         </div>
       </motion.div>
-    </AuroraBackground >
+      <MobileActionBar
+        onClear={clearData}
+        onShare={handleShare}
+        isValid={semesterAverage >= 10}
+      />
+    </QuantumGridBackground >
   );
 }
