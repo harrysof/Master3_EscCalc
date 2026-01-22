@@ -10,7 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Master 2 Grade Calculator",
+  title: "Master 3 Grade Calculator",
   description: "Calculate your semester average with style.",
 };
 

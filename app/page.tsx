@@ -112,7 +112,7 @@ export default function Home() {
               transition={{ delay: 0.2, duration: 0.8 }}
               className="text-5xl md:text-7xl font-black mb-2 tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
             >
-              Master 2 <br className="hidden sm:block" />
+              Master 3 <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 to-white animate-liquid">
                 Grade Calculator
               </span>
