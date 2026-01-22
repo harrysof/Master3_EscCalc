@@ -108,7 +108,22 @@ export function useGradeCalculator() {
         const requiredTotal = targetAverage * totalCoef;
         const gap = requiredTotal - currentSum;
 
-        return { gap };
+        // Calculate suggestedAvg for empty modules
+        const emptyModules = currentSubjects.filter(sub => {
+             const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
+             const grade = grades[key];
+             // Consider empty if exam and td are 0
+             return !grade || (grade.exam === 0 && grade.td === 0);
+        });
+
+        const emptyCoefSum = emptyModules.reduce((acc, sub) => acc + sub.coef, 0);
+        
+        let suggestedAvg = 0;
+        if (emptyCoefSum > 0) {
+            suggestedAvg = Math.max(0, Math.min(20, gap / emptyCoefSum));
+        }
+
+        return { gap, suggestedAvg };
     };
 
     return {
