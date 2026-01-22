@@ -152,9 +152,9 @@ export default function Home() {
           </motion.div>
 
           {/* Main Content & Result Split */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full pb-20">
+          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8 w-full pb-20">
             {/* Subjects List */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="order-2 lg:order-1 lg:col-span-2 space-y-4">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={selectedBranch.id}
@@ -200,7 +200,7 @@ export default function Home() {
             </div>
 
             {/* Floating Result Card */}
-            <div className="lg:col-span-1">
+            <div className="order-1 lg:order-2 lg:col-span-1">
               <div className="sticky top-8 space-y-6">
                 <motion.div
                   layout

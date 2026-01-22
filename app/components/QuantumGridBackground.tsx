@@ -25,6 +25,9 @@ export const QuantumGridBackground = ({
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
+            // Disable on mobile/small screens for performance
+            if (window.innerWidth < 768) return;
+
             // Center the coordinate system
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
@@ -59,8 +62,8 @@ export const QuantumGridBackground = ({
                 {/* Horizon Glow */}
                 <div className="absolute top-0 left-0 right-0 h-[60vh] bg-gradient-to-b from-[#050508] via-[#050508] to-transparent z-10 pointer-events-none" />
 
-                {/* Interactive Orbs */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                {/* Interactive Orbs - Only visible on md+ screens */}
+                <div className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none z-0">
                     {/* Primary Tracker Orb */}
                     <motion.div
                         style={{ x: orbX, y: orbY }}

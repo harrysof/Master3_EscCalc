@@ -43,10 +43,10 @@ export function GithubPFP() {
             whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.9, rotate: -5 }}
             onClick={handleClick}
-            className="absolute top-6 right-6 z-[100] cursor-pointer"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-[100] cursor-pointer"
             style={{ isolation: 'isolate' }} // Prevents z-index/overflow issues in some browsers
         >
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 group">
+            <div className="relative w-12 h-12 sm:w-20 sm:h-20 group">
 
                 {/* The "Border" - Blurred version of the image */}
                 <div className="absolute inset-0 rounded-full overflow-hidden blur-[2px] opacity-80 scale-105">
