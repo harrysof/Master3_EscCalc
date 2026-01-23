@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎓 Master 3 Grade Calculator
 
-## Getting Started
+A premium, high-performance grade calculator built for university students. Calculate your semester average with style and precision.
 
-First, run the development server:
+![Static Badge](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
+![Static Badge](https://img.shields.io/badge/Tailwind_CSS-3.4-blue?style=for-the-badge&logo=tailwind-css)
+![Static Badge](https://img.shields.io/badge/Framer_Motion-11-purple?style=for-the-badge&logo=framer)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Dynamic Branch Selection**: Support for multiple academic branches (ELN, AUTO, INFO, etc.) with custom coefficient data.
+- **"What-If" Simulation**: Enter your target average and see exactly what grades you need in your remaining modules.
+- **Real-time Calculations**: Instant average updates as you type your grades.
+- **Premium UI/UX**:
+  - Responsive layout optimized for both Desktop and Mobile.
+  - Interactive background with a 3D grid and mouse-tracking orbs (Desktop).
+  - Smooth animations powered by Framer Motion.
+  - Modern "Glassmorphism" aesthetic (Desktop).
+- **Mobile Performance Optimized**:
+  - Automatically disables heavy 3D effects and blur filters on mobile devices for a snappy, buttery-smooth experience.
+  - Reordered layout for better accessibility on smaller screens.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Recent Optimizations
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Static Title for Mobile**: Improved initial load performance by disabling infinite liquid animations on small screens.
+- **Deep Performance Optimization**: 
+  - Disabled the 3D grid background on mobile.
+  - Switched from heavy `backdrop-blur` to solid colors on mobile.
+  - Removed expensive text glowing effects during scrolling on mobile.
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **State Management**: React Hooks (useState, useMemo)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📦 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/harrysof/Master3_EscCalc.git
+    cd Master3_EscCalc
+    ```
 
-## Deploy on Vercel
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4.  **Build for production**:
+    ```bash
+    npm run build
+    ```
+
+## 📄 License
+
+This project is open-source. Created with ❤️ by Sofiane Belkacem Nacer.
