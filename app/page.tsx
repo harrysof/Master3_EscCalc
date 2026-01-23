@@ -142,7 +142,7 @@ export default function Home() {
               onClick={clearData}
               className="mt-6 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300"
             >
-              Clear Data 🗑️
+              Clear Data
             </motion.button>
           </div>
 
