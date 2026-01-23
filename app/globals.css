@@ -87,9 +87,11 @@ body {
   }
 }
 
-.animate-liquid {
-  background-size: 300% 300%;
-  animation: liquid 8s ease infinite;
+@media (min-width: 768px) {
+  .animate-liquid {
+    background-size: 300% 300%;
+    animation: liquid 8s ease infinite;
+  }
 }
 
 .animate-aurora {

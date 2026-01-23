@@ -12,7 +12,7 @@ import { MobileActionBar } from "./components/MobileActionBar";
 import { WhatIfSimulator } from "./components/WhatIfSimulator";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import html2canvas from "html2canvas";
 
@@ -94,7 +94,14 @@ export default function Home() {
     }
   };
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <QuantumGridBackground>
@@ -115,10 +122,7 @@ export default function Home() {
               className="text-5xl md:text-7xl font-black mb-2 tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
             >
               Master 3 <br className="hidden sm:block" />
-              <span className={cn(
-                "text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 to-white",
-                !isMobile && "animate-liquid"
-              )}>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 to-white animate-liquid">
                 Grade Calculator
               </span>
             </motion.h1>
