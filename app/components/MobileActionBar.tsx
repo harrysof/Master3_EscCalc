@@ -42,7 +42,7 @@ export function MobileActionBar({ onClear, onShare, onAutofill, isSharing, isVal
                                 className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-[#1E1E2A] border border-white/10 rounded-xl p-2 shadow-2xl flex flex-col gap-2 w-32"
                             >
                                 <p className="text-[10px] text-center text-gray-500 font-bold uppercase tracking-widest mb-1">Target</p>
-                                {[10, 12, 15].map((target) => (
+                                {[10, 15, 17].map((target) => (
                                     <button
                                         key={target}
                                         onClick={() => {
@@ -54,6 +54,18 @@ export function MobileActionBar({ onClear, onShare, onAutofill, isSharing, isVal
                                         {target}/20
                                     </button>
                                 ))}
+                                <button
+                                    onClick={() => {
+                                        const custom = window.prompt("Enter target average (e.g. 14.5):");
+                                        if (custom && !isNaN(parseFloat(custom))) {
+                                            onAutofill(parseFloat(custom));
+                                        }
+                                        setShowAutofillMenu(false);
+                                    }}
+                                    className="w-full py-1.5 rounded bg-blue-500/20 hover:bg-blue-500/30 text-[10px] font-bold text-blue-400 transition-colors uppercase tracking-tighter"
+                                >
+                                    Custom
+                                </button>
                             </motion.div>
                         )}
                     </AnimatePresence>

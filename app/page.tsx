@@ -60,6 +60,7 @@ export default function Home() {
   }, [semesterAverage]);
 
   const [isSharing, setIsSharing] = useState(false);
+  const [showDesktopAutofill, setShowDesktopAutofill] = useState(false);
 
   const handleShare = async () => {
     if (isSharing) return;
@@ -162,27 +163,15 @@ export default function Home() {
               C'est Grave Directe | By Sofiane Belkacem Nacer
             </motion.p>
 
-            <div className="flex gap-3">
-              <motion.button
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                onClick={() => autofillGrades(10)}
-                className="hidden lg:flex mt-6 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider hover:bg-blue-500/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300 items-center gap-2"
-              >
-                <Wand2 className="w-3 h-3" /> Magic Fill (10)
-              </motion.button>
-
-              <motion.button
-                initial={isMobile ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                onClick={clearData}
-                className="mt-6 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300"
-              >
-                Clear Data
-              </motion.button>
-            </div>
+            <motion.button
+              initial={isMobile ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              onClick={clearData}
+              className="mt-6 px-6 py-2 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300 mx-auto block"
+            >
+              Clear Data
+            </motion.button>
           </div>
 
           {/* Branch Selector */}
@@ -212,11 +201,61 @@ export default function Home() {
                   transition={{ duration: 0.3 }}
                   className="space-y-3"
                 >
-                  <div className="flex items-center justify-between mb-4 px-2">
+                  <div className="flex items-center justify-between mb-4 px-2 relative">
                     <h2 className="text-xl font-bold flex items-center gap-2 text-white">
                       <span className="w-1.5 h-6 rounded-full" style={{ backgroundColor: selectedBranch.color }} />
                       {selectedBranch.name}
                     </h2>
+
+                    {/* Desktop Autofill Button */}
+                    <div className="hidden lg:block relative">
+                      <button
+                        onClick={() => setShowDesktopAutofill(!showDesktopAutofill)}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider hover:bg-blue-500/20 transition-all duration-300"
+                      >
+                        <Wand2 className="w-4 h-4" />
+                        Magic Autofill
+                      </button>
+
+                      <AnimatePresence>
+                        {showDesktopAutofill && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute top-full right-0 mt-2 w-48 bg-[#1E1E2A] border border-white/10 rounded-2xl shadow-2xl p-3 z-[110] flex flex-col gap-2"
+                          >
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest px-2 mb-1">Select Target</p>
+                            {[10, 15, 17].map((target) => (
+                              <button
+                                key={target}
+                                onClick={() => {
+                                  autofillGrades(target);
+                                  setShowDesktopAutofill(false);
+                                }}
+                                className="w-full text-left px-3 py-2 rounded-xl hover:bg-white/5 text-sm text-white flex justify-between items-center group transition-all"
+                              >
+                                <span>{target}/20</span>
+                                <span className="opacity-0 group-hover:opacity-100 text-blue-400 text-[10px] font-bold">Apply</span>
+                              </button>
+                            ))}
+                            <div className="h-px bg-white/5 my-1" />
+                            <button
+                              onClick={() => {
+                                const custom = window.prompt("Enter target average (0-20):");
+                                if (custom && !isNaN(parseFloat(custom))) {
+                                  autofillGrades(parseFloat(custom));
+                                }
+                                setShowDesktopAutofill(false);
+                              }}
+                              className="w-full text-left px-3 py-2 rounded-xl hover:bg-blue-500/10 text-sm text-blue-400 font-medium transition-all"
+                            >
+                              Custom Target...
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
 
                   {currentSubjects.map((sub, index) => {
