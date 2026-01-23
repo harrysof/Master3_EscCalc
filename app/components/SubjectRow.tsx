@@ -69,7 +69,7 @@ export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulatio
                                 type="number"
                                 min="0"
                                 max="20"
-                                step="0.05"
+                                step="0.25"
                                 value={exam || ""}
                                 placeholder={isSimulationMode && exam === 0 && suggestedAvg ? suggestedAvg.toFixed(2) : "0"}
                                 onChange={(e) => onUpdate("exam", parseFloat(e.target.value) || 0)}
@@ -85,7 +85,7 @@ export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulatio
                                 type="number"
                                 min="0"
                                 max="20"
-                                step="0.05"
+                                step="0.25"
                                 value={td || ""}
                                 placeholder={isSimulationMode && td === 0 && suggestedAvg ? suggestedAvg.toFixed(2) : "0"}
                                 onChange={(e) => onUpdate("td", parseFloat(e.target.value) || 0)}

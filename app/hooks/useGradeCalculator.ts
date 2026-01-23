@@ -130,52 +130,66 @@ export function useGradeCalculator() {
     const [isAutofilled, setIsAutofilled] = useState<Record<string, boolean>>({});
 
     const autofillGrades = (target: number) => {
-        // 1. Calculate the available coefficient "space" (empty modules)
-        const emptyModules = currentSubjects.filter((sub) => {
-            const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
-            const grade = grades[key] || { exam: 0, td: 0 };
-            // Consider empty if BOTH are 0 (user hasn't touched it or cleared it)
-            return grade.exam === 0 && grade.td === 0;
-        });
+        // 1. Identify what needs to be filled (only fields that are 0)
+        const targets: { key: string, type: 'exam' | 'td', weight: number, min: number }[] = [];
+        let currentTotalScore = 0;
+        const totalCoef = currentSubjects.reduce((acc, sub) => acc + sub.coef, 0);
 
-        if (emptyModules.length === 0) return; // Nothing to fill
-
-        // 2. Calculate current weighted sum of FILLED modules
-        let currentWeightedSum = 0;
         currentSubjects.forEach((sub) => {
             const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
-            const grade = grades[key];
-            if (grade && (grade.exam !== 0 || grade.td !== 0)) {
-                const modAvg = grade.exam * 0.67 + grade.td * 0.33;
-                currentWeightedSum += modAvg * sub.coef;
+            const grade = grades[key] || { exam: 0, td: 0 };
+
+            // Heuristics for weights and minimums
+            const isEasy = sub.coef <= 1.5;
+            const baseMin = isEasy ? 13 : 10;
+
+            if (grade.exam === 0) {
+                targets.push({ key, type: 'exam', weight: 0.67 * sub.coef, min: baseMin });
+            } else {
+                currentTotalScore += grade.exam * 0.67 * sub.coef;
+            }
+
+            if (grade.td === 0) {
+                // TD usually higher, so we give it slightly more "base" points later
+                targets.push({ key, type: 'td', weight: 0.33 * sub.coef, min: Math.max(baseMin + 1, 12) });
+            } else {
+                currentTotalScore += grade.td * 0.33 * sub.coef;
             }
         });
 
-        // 3. Calculate Gap
-        const totalCoef = currentSubjects.reduce((acc, sub) => acc + sub.coef, 0);
-        const requiredTotalScore = target * totalCoef;
-        const gap = requiredTotalScore - currentWeightedSum;
+        if (targets.length === 0) return;
 
-        // 4. Calculate needed average for remaining modules
-        const emptyCoefSum = emptyModules.reduce((acc, sub) => acc + sub.coef, 0);
-        let neededAvg = gap / emptyCoefSum;
+        // 2. Calculate remaining points needed
+        const pointsNeeded = (target * totalCoef) - currentTotalScore;
+        const totalTargetWeight = targets.reduce((acc, t) => acc + t.weight, 0);
 
-        // 5. Clamp to realistic range [10, 18] (or 0-20 if desperate/custom)
-        // User requested 10-18. If neededAvg < 10, we fill 10. If > 18, we fill 18.
-        neededAvg = Math.max(10, Math.min(18, neededAvg));
+        // 3. Distribute points
+        const currentMinPoints = targets.reduce((acc, t) => acc + t.min * t.weight, 0);
+        const extraPoints = pointsNeeded - currentMinPoints;
+        const boost = Math.max(0, extraPoints / totalTargetWeight);
 
-        // 6. Apply to grades
         setGrades((prev) => {
             const nextGrades = { ...prev };
             const newAutofilled: Record<string, boolean> = { ...isAutofilled };
 
-            emptyModules.forEach((sub) => {
-                const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
-                // Set both exam and TD to neededAvg so the module average is exactly neededAvg
-                // (Assuming 0.67*X + 0.33*X = X)
-                nextGrades[key] = { exam: neededAvg, td: neededAvg };
-                newAutofilled[key] = true;
+            targets.forEach((t) => {
+                // Apply boost + heuristic offset
+                let value = t.min + boost;
+
+                // Academically, notes are usually 10, 10.25, 10.5, 10.75
+                value = Math.round(value * 4) / 4;
+
+                // Clamp to realistic 20
+                value = Math.min(20, value);
+
+                if (!nextGrades[t.key]) nextGrades[t.key] = { exam: 0, td: 0 };
+                nextGrades[t.key] = {
+                    ...nextGrades[t.key],
+                    [t.type]: value
+                };
+                newAutofilled[t.key] = true;
             });
+
             setIsAutofilled(newAutofilled);
             return nextGrades;
         });
