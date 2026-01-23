@@ -94,10 +94,12 @@ export default function Home() {
     }
   };
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   return (
     <QuantumGridBackground>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={isMobile ? false : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative z-10 flex-1 flex flex-col p-4 sm:p-8 w-full h-[100vh] overflow-y-auto"
@@ -107,18 +109,21 @@ export default function Home() {
           {/* Header */}
           <div className="text-center mb-6 mt-8 relative">
             <motion.h1
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={isMobile ? false : { scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
               className="text-5xl md:text-7xl font-black mb-2 tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
             >
               Master 3 <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 to-white animate-liquid">
+              <span className={cn(
+                "text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 to-white",
+                !isMobile && "animate-liquid"
+              )}>
                 Grade Calculator
               </span>
             </motion.h1>
             <motion.p
-              initial={{ opacity: 0 }}
+              initial={isMobile ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
               className="text-gray-400 font-light tracking-[0.3em] text-xs uppercase"
@@ -127,7 +132,7 @@ export default function Home() {
             </motion.p>
 
             <motion.button
-              initial={{ opacity: 0, y: 10 }}
+              initial={isMobile ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
               onClick={clearData}
