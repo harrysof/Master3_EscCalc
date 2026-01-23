@@ -12,6 +12,7 @@ import { MobileActionBar } from "./components/MobileActionBar";
 import { WhatIfSimulator } from "./components/WhatIfSimulator";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { Wand2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import html2canvas from "html2canvas";
@@ -31,7 +32,9 @@ export default function Home() {
     setIsSimulationMode,
     targetAverage,
     setTargetAverage,
-    getSimulationGap
+    getSimulationGap,
+    autofillGrades,
+    isAutofilled
   } = useGradeCalculator();
 
   const getSemesterColor = (avg: number) => {
@@ -159,15 +162,27 @@ export default function Home() {
               C'est Grave Directe | By Sofiane Belkacem Nacer
             </motion.p>
 
-            <motion.button
-              initial={isMobile ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              onClick={clearData}
-              className="mt-6 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300"
-            >
-              Clear Data
-            </motion.button>
+            <div className="flex gap-3">
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                onClick={() => autofillGrades(10)}
+                className="hidden lg:flex mt-6 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider hover:bg-blue-500/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300 items-center gap-2"
+              >
+                <Wand2 className="w-3 h-3" /> Magic Fill (10)
+              </motion.button>
+
+              <motion.button
+                initial={isMobile ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                onClick={clearData}
+                className="mt-6 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300"
+              >
+                Clear Data
+              </motion.button>
+            </div>
           </div>
 
           {/* Branch Selector */}
@@ -297,6 +312,7 @@ export default function Home() {
       <MobileActionBar
         onClear={clearData}
         onShare={handleShare}
+        onAutofill={autofillGrades}
         isSharing={isSharing}
         isValid={semesterAverage >= 10}
       />

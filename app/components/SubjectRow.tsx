@@ -11,9 +11,10 @@ interface SubjectRowProps {
     onUpdate: (type: "exam" | "td", value: number) => void;
     isSimulationMode?: boolean;
     suggestedAvg?: number;
+    isAutofilled?: boolean;
 }
 
-export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulationMode, suggestedAvg }: SubjectRowProps) {
+export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulationMode, suggestedAvg, isAutofilled }: SubjectRowProps) {
     const getAvgColor = (avg: number) => {
         if (avg >= 15) return "text-blue-400 md:drop-shadow-[0_0_15px_rgba(96,165,250,0.8)]";
         if (avg >= 10) return "text-green-400 md:drop-shadow-[0_0_8px_rgba(74,222,128,0.6)]";
@@ -22,6 +23,7 @@ export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulatio
     };
 
     const getInputBorderColor = (value: number) => {
+        if (isAutofilled) return "border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]";
         if (value === 0) return "border-[#3A3A5A]"; // Neutral
         if (value >= 10) return "border-green-500/50 md:shadow-[0_0_8px_rgba(74,222,128,0.3)]";
         if (value >= 5) return "border-yellow-500/50";
@@ -33,6 +35,7 @@ export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulatio
     };
 
     const getRiskBarColor = () => {
+        if (isAutofilled) return "bg-blue-500 animate-pulse";
         if (moduleAvg >= 15) return "bg-blue-500";
         if (moduleAvg >= 10) return "bg-green-500";
         if (moduleAvg >= 5) return "bg-yellow-500";
@@ -40,7 +43,15 @@ export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulatio
     };
 
     return (
-        <div className="group bg-[#1E1E2A]/50 hover:bg-[#1E1E2A] border border-[#3A3A5A]/50 hover:border-[#3A3A5A] rounded-xl overflow-hidden transition-all duration-300">
+        <div className={cn(
+            "group bg-[#1E1E2A]/50 hover:bg-[#1E1E2A] border border-[#3A3A5A]/50 hover:border-[#3A3A5A] rounded-xl overflow-hidden transition-all duration-300 relative",
+            isAutofilled && "border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
+        )}>
+            {/* Autofill Blue Dot Indicator */}
+            {isAutofilled && (
+                <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_5px_#3b82f6] animate-pulse z-10" />
+            )}
+
             <div className="p-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-2 mb-1 flex-1 min-w-0">

@@ -110,20 +110,75 @@ export function useGradeCalculator() {
 
         // Calculate suggestedAvg for empty modules
         const emptyModules = currentSubjects.filter(sub => {
-             const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
-             const grade = grades[key];
-             // Consider empty if exam and td are 0
-             return !grade || (grade.exam === 0 && grade.td === 0);
+            const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
+            const grade = grades[key];
+            // Consider empty if exam and td are 0
+            return !grade || (grade.exam === 0 && grade.td === 0);
         });
 
         const emptyCoefSum = emptyModules.reduce((acc, sub) => acc + sub.coef, 0);
-        
+
         let suggestedAvg = 0;
         if (emptyCoefSum > 0) {
             suggestedAvg = Math.max(0, Math.min(20, gap / emptyCoefSum));
         }
 
         return { gap, suggestedAvg };
+    };
+
+    // Autofill Logic
+    const [isAutofilled, setIsAutofilled] = useState<Record<string, boolean>>({});
+
+    const autofillGrades = (target: number) => {
+        // 1. Calculate the available coefficient "space" (empty modules)
+        const emptyModules = currentSubjects.filter((sub) => {
+            const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
+            const grade = grades[key] || { exam: 0, td: 0 };
+            // Consider empty if BOTH are 0 (user hasn't touched it or cleared it)
+            return grade.exam === 0 && grade.td === 0;
+        });
+
+        if (emptyModules.length === 0) return; // Nothing to fill
+
+        // 2. Calculate current weighted sum of FILLED modules
+        let currentWeightedSum = 0;
+        currentSubjects.forEach((sub) => {
+            const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
+            const grade = grades[key];
+            if (grade && (grade.exam !== 0 || grade.td !== 0)) {
+                const modAvg = grade.exam * 0.67 + grade.td * 0.33;
+                currentWeightedSum += modAvg * sub.coef;
+            }
+        });
+
+        // 3. Calculate Gap
+        const totalCoef = currentSubjects.reduce((acc, sub) => acc + sub.coef, 0);
+        const requiredTotalScore = target * totalCoef;
+        const gap = requiredTotalScore - currentWeightedSum;
+
+        // 4. Calculate needed average for remaining modules
+        const emptyCoefSum = emptyModules.reduce((acc, sub) => acc + sub.coef, 0);
+        let neededAvg = gap / emptyCoefSum;
+
+        // 5. Clamp to realistic range [10, 18] (or 0-20 if desperate/custom)
+        // User requested 10-18. If neededAvg < 10, we fill 10. If > 18, we fill 18.
+        neededAvg = Math.max(10, Math.min(18, neededAvg));
+
+        // 6. Apply to grades
+        setGrades((prev) => {
+            const nextGrades = { ...prev };
+            const newAutofilled: Record<string, boolean> = { ...isAutofilled };
+
+            emptyModules.forEach((sub) => {
+                const key = `${selectedBranch.id}-${selectedSemester}-${sub.name}`;
+                // Set both exam and TD to neededAvg so the module average is exactly neededAvg
+                // (Assuming 0.67*X + 0.33*X = X)
+                nextGrades[key] = { exam: neededAvg, td: neededAvg };
+                newAutofilled[key] = true;
+            });
+            setIsAutofilled(newAutofilled);
+            return nextGrades;
+        });
     };
 
     return {
@@ -140,6 +195,8 @@ export function useGradeCalculator() {
         setIsSimulationMode,
         targetAverage,
         setTargetAverage,
-        getSimulationGap
+        getSimulationGap,
+        autofillGrades,
+        isAutofilled
     };
 }
