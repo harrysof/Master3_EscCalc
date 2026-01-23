@@ -56,41 +56,65 @@ export default function Home() {
     prevAvgRef.current = semesterAverage;
   }, [semesterAverage]);
 
+  const [isSharing, setIsSharing] = useState(false);
+
   const handleShare = async () => {
+    if (isSharing) return;
+    setIsSharing(true);
+
     try {
       const element = document.getElementById("result-card");
-      if (!element) return;
+      if (!element) throw new Error("Result card element not found");
 
+      // Capture the result card
       const canvas = await html2canvas(element, {
         backgroundColor: "#121218",
-        scale: 2, // Reting quality
+        scale: 2,
+        useCORS: true,
+        logging: false,
       });
 
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
+      // Convert to blob
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+      if (!blob) throw new Error("Failed to generate image blob");
 
-        // Try native sharing first (mobile)
-        if (navigator.share) {
-          try {
-            const file = new File([blob], "grades.png", { type: "image/png" });
-            await navigator.share({
-              title: "My Grades",
-              text: `I got a ${semesterAverage.toFixed(2)} average!`,
-              files: [file],
-            });
-          } catch (err) {
-            console.log("Sharing failed or cancelled", err);
-          }
-        } else {
-          // Fallback to download
-          const link = document.createElement("a");
-          link.download = "my-grades.png";
-          link.href = canvas.toDataURL();
-          link.click();
-        }
-      });
+      const file = new File([blob], "master3-grades.png", { type: "image/png" });
+
+      // Check if native sharing is supported for files
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: "My Master 3 Average",
+          text: `Check out my results! I got a ${semesterAverage.toFixed(2)} average! 🎓`,
+          files: [file],
+        });
+      } else if (navigator.share) {
+        // Fallback to text sharing if file sharing is not supported
+        await navigator.share({
+          title: "My Master 3 Average",
+          text: `I just calculated my grades! My average is ${semesterAverage.toFixed(2)}/20. 🎓`,
+          url: window.location.href,
+        });
+      } else {
+        // Fallback to direct download
+        const link = document.createElement("a");
+        link.download = "master3-grades.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
     } catch (err) {
-      console.error("Failed to capture image", err);
+      console.error("Sharing failed:", err);
+      // Final attempt: simple text share if capture fails
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            text: `My Master 3 average is ${semesterAverage.toFixed(2)}/20! 🎓`,
+          });
+        } catch (sErr) {
+          console.error("Text share fallback failed", sErr);
+        }
+      }
+    } finally {
+      setIsSharing(false);
     }
   };
 
@@ -273,6 +297,7 @@ export default function Home() {
       <MobileActionBar
         onClear={clearData}
         onShare={handleShare}
+        isSharing={isSharing}
         isValid={semesterAverage >= 10}
       />
     </QuantumGridBackground >

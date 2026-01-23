@@ -1,14 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 interface MobileActionBarProps {
     onClear: () => void;
     onShare: () => void;
+    isSharing?: boolean;
     isValid: boolean;
 }
 
-export function MobileActionBar({ onClear, onShare, isValid }: MobileActionBarProps) {
+export function MobileActionBar({ onClear, onShare, isSharing, isValid }: MobileActionBarProps) {
     return (
         <motion.div
             initial={{ y: 100 }}
@@ -20,7 +22,8 @@ export function MobileActionBar({ onClear, onShare, isValid }: MobileActionBarPr
                 {/* Clear Button */}
                 <button
                     onClick={onClear}
-                    className="flex flex-col items-center gap-1 text-gray-400 hover:text-red-400 transition-colors"
+                    disabled={isSharing}
+                    className="flex flex-col items-center gap-1 text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
                 >
                     <span className="text-xl">🗑️</span>
                     <span className="text-[10px] uppercase tracking-widest font-bold">Clear</span>
@@ -29,8 +32,8 @@ export function MobileActionBar({ onClear, onShare, isValid }: MobileActionBarPr
                 {/* Status Indicator */}
                 <div className="flex flex-col items-center gap-1">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-black ${isValid
-                            ? "bg-green-500/20 text-green-400 border-2 border-green-500/50"
-                            : "bg-red-500/20 text-red-400 border-2 border-red-500/50"
+                        ? "bg-green-500/20 text-green-400 border-2 border-green-500/50"
+                        : "bg-red-500/20 text-red-400 border-2 border-red-500/50"
                         }`}>
                         {isValid ? "✓" : "✗"}
                     </div>
@@ -42,10 +45,19 @@ export function MobileActionBar({ onClear, onShare, isValid }: MobileActionBarPr
                 {/* Share Button */}
                 <button
                     onClick={onShare}
-                    className="flex flex-col items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors"
+                    disabled={isSharing}
+                    className="flex flex-col items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors group disabled:opacity-50"
                 >
-                    <span className="text-xl">📤</span>
-                    <span className="text-[10px] uppercase tracking-widest font-bold">Share</span>
+                    <div className="relative">
+                        {isSharing ? (
+                            <Loader2 className="w-6 h-6 animate-spin text-blue-400" />
+                        ) : (
+                            <span className="text-xl group-active:scale-125 transition-transform">📤</span>
+                        )}
+                    </div>
+                    <span className="text-[10px] uppercase tracking-widest font-bold">
+                        {isSharing ? "Wait..." : "Share"}
+                    </span>
                 </button>
             </div>
         </motion.div>
