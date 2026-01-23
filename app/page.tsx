@@ -4,7 +4,7 @@ import { useGradeCalculator } from "./hooks/useGradeCalculator";
 import { BranchSelector } from "./components/BranchSelector";
 import { SubjectRow } from "./components/SubjectRow";
 import { QuantumGridBackground } from "./components/QuantumGridBackground";
-import { ActivityFeed } from "./components/ActivityFeed";
+
 import { GithubPFP } from "./components/GithubPFP";
 import { ProgressRing } from "./components/ProgressRing";
 import { ModuleImpact } from "./components/ModuleImpact";
@@ -337,12 +337,7 @@ export default function Home() {
                   branchId={selectedBranch.id}
                 />
 
-                {/* Social Feed Integration */}
-                <ActivityFeed
-                  currentAverage={semesterAverage}
-                  selectedBranch={selectedBranch}
-                  validAverage={semesterAverage >= 10}
-                />
+
               </div>
             </div>
           </div>
