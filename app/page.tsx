@@ -142,7 +142,7 @@ export default function Home() {
         <GithubPFP />
         <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
           {/* Header */}
-          <div className="text-center mb-6 mt-8 relative">
+          <div className="text-center mb-6 mt-24 sm:mt-8 relative">
             <motion.h1
               initial={isMobile ? false : { scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}

@@ -43,13 +43,26 @@ export function GithubPFP() {
             whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.9, rotate: -5 }}
             onClick={handleClick}
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-[100] cursor-pointer"
-            style={{ isolation: 'isolate' }} // Prevents z-index/overflow issues in some browsers
+            className="absolute top-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:top-6 sm:right-6 z-[100] cursor-pointer"
+            style={{ isolation: 'isolate' }}
         >
-            <div className="relative w-12 h-12 sm:w-20 sm:h-20 group">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 group">
+                {/* Ambient Glow */}
+                <motion.div
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.6, 0.3],
+                    }}
+                    transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                    className="absolute inset-0 bg-blue-500/30 blur-[20px] rounded-full z-0"
+                />
 
                 {/* The "Border" - Blurred version of the image */}
-                <div className="absolute inset-0 rounded-full overflow-hidden blur-[2px] opacity-80 scale-105">
+                <div className="absolute inset-0 rounded-full overflow-hidden blur-[2px] opacity-80 scale-105 z-10">
                     <Image
                         src="/pfp.jpg"
                         alt="Border"
@@ -59,7 +72,7 @@ export function GithubPFP() {
                 </div>
 
                 {/* The Main Frame */}
-                <div className="absolute inset-[2px] rounded-full overflow-hidden shadow-2xl z-10"
+                <div className="absolute inset-[2px] rounded-full overflow-hidden shadow-2xl z-20"
                     style={{ isolation: 'isolate', WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
 
                     {/* Glass Effects */}
@@ -77,14 +90,14 @@ export function GithubPFP() {
                 </div>
 
                 {/* Outer definition ring (thin) */}
-                <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none z-20" />
+                <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none z-30" />
             </div>
 
             {/* Tooltip or Label - Glassy variant */}
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 whileHover={{ opacity: 1, y: 0 }}
-                className="absolute -bottom-8 right-0 bg-white/10 backdrop-blur-xl px-2 py-1 rounded text-[10px] text-white font-black whitespace-nowrap pointer-events-none border border-white/20 shadow-xl tracking-tighter"
+                className="hidden sm:block absolute -bottom-8 right-0 bg-white/10 backdrop-blur-xl px-2 py-1 rounded text-[10px] text-white font-black whitespace-nowrap pointer-events-none border border-white/20 shadow-xl tracking-tighter"
             >
                 @harrysof
             </motion.div>
