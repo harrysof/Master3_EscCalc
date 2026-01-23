@@ -43,7 +43,7 @@ export const QuantumGridBackground = ({
         <main className="relative min-h-screen w-full bg-[#050508] overflow-hidden">
 
             {/* 3D Grid Container */}
-            <div className="absolute inset-0 z-0 overflow-hidden perspective-[1000px]">
+            <div className="absolute inset-0 z-0 overflow-hidden perspective-[1000px] hidden md:block">
                 {/* The Grid Plane */}
                 <div
                     className="absolute inset-0 w-[200vw] h-[200vh] -ml-[50vw] -mt-[50vh] origin-bottom transform-gpu"

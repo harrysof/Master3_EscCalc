@@ -151,7 +151,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="w-full mb-8 backdrop-blur-sm bg-black/20 p-2 rounded-2xl border border-white/5"
+            className="w-full mb-8 bg-[#1E1E2A] md:bg-black/20 md:backdrop-blur-sm p-2 rounded-2xl border border-white/5"
           >
             <BranchSelector
               branches={branches}
@@ -214,7 +214,7 @@ export default function Home() {
                 <motion.div
                   layout
                   id="result-card"
-                  className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
+                  className="bg-[#1E1E2A] md:bg-black/40 md:backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
                 >
                   {/* Animated glow based on score */}
                   <motion.div

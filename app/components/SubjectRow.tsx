@@ -15,17 +15,17 @@ interface SubjectRowProps {
 
 export function SubjectRow({ subject, exam, td, moduleAvg, onUpdate, isSimulationMode, suggestedAvg }: SubjectRowProps) {
     const getAvgColor = (avg: number) => {
-        if (avg >= 15) return "text-blue-400 drop-shadow-[0_0_15px_rgba(96,165,250,0.8)]";
-        if (avg >= 10) return "text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.6)]";
+        if (avg >= 15) return "text-blue-400 md:drop-shadow-[0_0_15px_rgba(96,165,250,0.8)]";
+        if (avg >= 10) return "text-green-400 md:drop-shadow-[0_0_8px_rgba(74,222,128,0.6)]";
         if (avg >= 5) return "text-purple-400";
-        return "text-red-500 animate-[pulse_1s_ease-in-out_infinite] font-black drop-shadow-[0_0_5px_rgba(239,68,68,0.5)]";
+        return "text-red-500 animate-[pulse_1s_ease-in-out_infinite] font-black md:drop-shadow-[0_0_5px_rgba(239,68,68,0.5)]";
     };
 
     const getInputBorderColor = (value: number) => {
         if (value === 0) return "border-[#3A3A5A]"; // Neutral
-        if (value >= 10) return "border-green-500/50 shadow-[0_0_8px_rgba(74,222,128,0.3)]";
+        if (value >= 10) return "border-green-500/50 md:shadow-[0_0_8px_rgba(74,222,128,0.3)]";
         if (value >= 5) return "border-yellow-500/50";
-        return "border-red-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]";
+        return "border-red-500/50 md:shadow-[0_0_8px_rgba(239,68,68,0.3)]";
     };
 
     const getRiskBarWidth = () => {
