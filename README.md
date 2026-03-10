@@ -1,4 +1,4 @@
-# 🎓 Master 3 Grade Calculator
+# Master 3 Grade Calculator
 
 A premium, high-performance grade calculator built for university students. Calculate your semester average with style and precision.
 
@@ -20,7 +20,7 @@ A premium, high-performance grade calculator built for university students. Calc
   - Automatically disables heavy 3D effects and blur filters on mobile devices for a snappy, buttery-smooth experience.
   - Reordered layout for better accessibility on smaller screens.
 
-## 🚀 Recent Optimizations
+## Recent Optimizations
 
 - **Static Title for Mobile**: Improved initial load performance by disabling infinite liquid animations on small screens.
 - **Deep Performance Optimization**: 
@@ -28,7 +28,7 @@ A premium, high-performance grade calculator built for university students. Calc
   - Switched from heavy `backdrop-blur` to solid colors on mobile.
   - Removed expensive text glowing effects during scrolling on mobile.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
@@ -36,7 +36,7 @@ A premium, high-performance grade calculator built for university students. Calc
 - **State Management**: React Hooks (useState, useMemo)
 - **Deployment**: [Vercel](https://vercel.com/)
 
-## 📦 Getting Started
+## Getting Started
 
 1.  **Clone the repository**:
     ```bash
@@ -59,6 +59,6 @@ A premium, high-performance grade calculator built for university students. Calc
     npm run build
     ```
 
-## 📄 License
+## License
 
 This project is open-source. Created with ❤️ by Sofiane Belkacem Nacer.
